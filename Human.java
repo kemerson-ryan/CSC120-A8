@@ -1,7 +1,8 @@
 import javax.management.RuntimeErrorException;
 
-public class Human //implements Contract 
+public class Human implements Contract 
 {
+
     /**
      * Declaring all variables, initializing a few
      */
@@ -10,29 +11,36 @@ public class Human //implements Contract
     protected static int nPages=10;
     protected static boolean hasBook;
     protected static boolean walking, flying;
-    protected static int currentX, currentY = 0;
+    protected int currentX;
+    protected int currentY = 0;
     protected static int braincells=25;
     protected static int northBound = 100, southBound = -100, eastBound = 300, westBound = -300;
 
+    public Human(){
+        this.currentX=0;
+        this.currentY=0;
+    }
     /**
      * Grab item to use in later methods
      * @param String item
      */
-    public static void grab(String item){
-        if(item.contains("coffee")){
-            if(hasCoffee==true){
-                System.out.println("You're already holding a " + item);
-            }else{
-                hasCoffee=true;
-                System.out.println("You grabbed the coffee");
+    public void grab(String item){
+        if(item.contains("coffee") || item.contains("book")){
+            if(item.contains("coffee")){
+                if(hasCoffee==true){
+                    System.out.println("You're already holding a " + item);
+                }else{
+                    hasCoffee=true;
+                    System.out.println("You grabbed the coffee");
+                }
             }
-        }
-        if(item.contains("book")){
-            if(hasBook==true){
-                System.out.println("You're already holding a " + item);
-            }else{
-                hasBook=true;
-                System.out.println("You grabbed the book");
+            if(item.contains("book")){
+                if(hasBook==true){
+                    System.out.println("You're already holding a " + item);
+                }else{
+                    hasBook=true;
+                    System.out.println("You grabbed the book");
+                }
             }
         }
         else{
@@ -44,25 +52,28 @@ public class Human //implements Contract
      * @param String item
      * @return String item
      */
-    public static String drop(String item){
-        if(item=="coffee"){
-            if(hasCoffee==false){
-                System.out.println("You're not holding a " + item);
-            }else{
-                hasCoffee=false;
+    public String drop(String item){
+        if(item.contains("coffee") || item.contains("book")){
+            if(item.contains("coffee")){
+                if(hasCoffee==false){
+                    System.out.println("You're not holding a " + item);
+                }else{
+                    hasCoffee=false;
+                    System.out.println("You dropped the " + item);
+                }
             }
-        }
-        if(item=="book"){
-            if(hasBook==false){
-                System.out.println("You're not holding a " + item);
-            }else{
-                hasBook=false;
+            if(item.contains("book")){
+                if(hasBook==false){
+                    System.out.println("You're not holding a " + item);
+                }else{
+                    hasBook=false;
+                    System.out.println("You dropped the " + item);
+                }
             }
         }
         else{
             System.out.println("I would if I could--I don't seem to be holding a " + item);
         }
-        System.out.println("You dropped the " + item);
         return item;
     }
     /**
@@ -109,7 +120,7 @@ public class Human //implements Contract
      * Examine item, methods to change values correspoinding to item
      * @param String item
      */
-    public static void examine(String item){ 
+    public void examine(String item){ 
         if(walking || flying){
             System.out.println("You can't examine something while you're moving! Take a seat and get some rest()");
         }else{
@@ -132,7 +143,7 @@ public class Human //implements Contract
      * Print specific messages if certain Strings passed in
      * @param String item
      */
-    public static void use(String item){
+    public void use(String item){
         if(item.contains("headphones")){
             System.out.println("Yesss let's jam out with headphones for a bit");
         }if(item.contains("phone")){
@@ -145,24 +156,24 @@ public class Human //implements Contract
      * Returns message with current coordinates
      * @return String "you are at position " + currentX + "," + currentY
      */
-    public static String currentPosition(){
-        return "you are at position " + currentX + "," + currentY;
+    public String currentPosition(){
+        return "you are at position " + this.currentX + "," + this.currentY;
     }
     /**
      * Walk method takes in directions to walk in, and changes coordinates accordingly, unless out of bounds
      * @param String direction
      * @return
      */
-    public static boolean walk(String direction){
+    public boolean walk(String direction){
         if(direction.contains("right") || direction.contains("left") || direction.contains("straight") || direction.contains("forward") || direction.contains("back")){
             if(direction.contains("right")){
-                currentX=currentX+1;
+                this.currentX=this.currentX+1;
             }if(direction.contains("left")){
-                currentX=currentX-1;
+                this.currentX=this.currentX-1;
             }if(direction.contains("straight") || direction.contains("forward")){
-                currentY=currentY+1;
+                this.currentY=this.currentY+1;
             }if(direction.contains("back")){
-                currentY=currentY-1;
+                this.currentY=this.currentY-1;
             }
             walking=true;
             System.out.println("Walked " + direction + ", " + currentPosition());
@@ -170,7 +181,7 @@ public class Human //implements Contract
             walking=false;
             System.out.println("Your direction must contain 'right', 'left', 'straight', 'forward', 'back'--you're not going anywhere with what you're saying.");
         }
-        if(currentX>eastBound || currentX<westBound || currentY>northBound || currentY<southBound){ 
+        if(this.currentX>eastBound || this.currentX<westBound || this.currentY>northBound || this.currentY<southBound){ 
             walking=false;
             throw new RuntimeException("You can't walk outside of the limits! Try again");
         }
@@ -182,8 +193,8 @@ public class Human //implements Contract
      * @param int y
      * @return boolean flying
      */
-    public static boolean fly(int x, int y){
-        if(x==currentX && y==currentY){
+    public boolean fly(int x, int y){
+        if(x==this.currentX && y==this.currentY){
             System.out.println("You didn't fly anywhere. Try changing your coordinates");
             flying=false;
         }if(x>eastBound || x<westBound || y>northBound || y<southBound){
@@ -191,8 +202,8 @@ public class Human //implements Contract
             flying=false;
         }else{
             flying=true;
-            currentX=x;
-            currentY=y;
+            this.currentX=x;
+            this.currentY=y;
             System.out.println("You flew, " + currentPosition());
         }
         return flying;
@@ -200,7 +211,7 @@ public class Human //implements Contract
     /**
      * Sets walking and flying booleans to false
      */
-    public static void rest(){ 
+    public void rest(){ 
         walking=false;
         flying=false;
         System.out.println("Taking a seat now");
@@ -209,7 +220,7 @@ public class Human //implements Contract
      * Shrinks int braincells and prints messages about value
      * @return int braincells
      */
-    public static Number shrink(){
+    public Number shrink(){
         braincells=braincells-2;
         System.out.println("The number of braincells you have is shrinking!!");
         if(braincells<=0){
@@ -221,7 +232,7 @@ public class Human //implements Contract
      * Grows int braincells
      * @return int braincells
      */
-    public static Number grow(){ 
+    public Number grow(){ 
         braincells=braincells+3;
         System.out.println("The number of braincells you have is growing!");
         return braincells;
@@ -229,21 +240,27 @@ public class Human //implements Contract
     /**
      * Reset braincells to default value
      */
-    public static void undo(){ //if make action log, this should be used to remove last action from array, and would have to reset the variables to their previous values--could be through overloading the methods adding a parameter or something
+    public void undo(){ //if make action log, this should be used to remove last action from array, and would have to reset the variables to their previous values--could be through overloading the methods adding a parameter or something
         braincells=25;
         System.out.println("Your braincell count has been reset, and is now " + braincells + ".");
     }
 
     public static void main(String args[]){
-        //fly(3,4);
-        //grab("book");
-        //grab("coffee");
-        //System.out.println(hasCoffee);
-        //drop("coffee");
-        //System.out.println(hasCoffee);
-        //walk("forward right");
-        //rest();
-        //examine("book");
-        //undo();
+        Human human = new Human();
+        Human nextHuman = new Human();
+        human.fly(3,4);
+        nextHuman.grab("book");
+        System.out.println(nextHuman.currentPosition());
+        System.out.println(human.currentPosition());
+
+
+        human.grab("coffee");
+        System.out.println(hasCoffee);
+        human.drop("coffee");
+        System.out.println(hasCoffee);
+        human.walk("forward right");
+        human.rest();
+        human.examine("book");
+        human.undo();
     }
 }
